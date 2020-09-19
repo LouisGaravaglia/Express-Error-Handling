@@ -1,22 +1,58 @@
 const express = require("express");
 const ExpressError = require("./expressError")
-const { convertAndValidateNumsArray, findMean } = require("./helpers")
+const { convertAndValidateNumsArray, findMean, findMedian, findMode } = require("./helpers")
 const app = express();
 
 app.get("/mean", function (req, res, next) {
     if (!req.query.nums) {
-    throw new ExpressError('You must pass a query key of nums with a comma-separated list of numbers.', 400)
+    throw new ExpressError('You must pass at least one value, or multiple values with a comma-separated list of numbers.', 400)
     } else {
         try {
             let numsAsStrings = req.query.nums.split(',');
             nums = convertAndValidateNumsArray(numsAsStrings)
         } catch(e) {
-            next(new ExpressError("You may only pass Integers as values.", 403))
+            next(new ExpressError("You may only pass Integers as values.", 400))
         }
     }
     const result = {
         operation: "mean",
         result: findMean(nums)
+    }
+    return res.send(result)
+});
+
+app.get("/median", function (req, res, next) {
+    if (!req.query.nums) {
+    throw new ExpressError('You must pass at least one value, or multiple values with a comma-separated list of numbers.', 400)
+    } else {
+        try {
+            let numsAsStrings = req.query.nums.split(',');
+            nums = convertAndValidateNumsArray(numsAsStrings)
+        } catch(e) {
+            next(new ExpressError("You may only pass Integers as values.", 400))
+        }
+    }
+    const result = {
+        operation: "median",
+        result: findMedian(nums)
+    }
+    return res.send(result)
+});
+
+app.get("/mode", function (req, res, next) {
+    if (!req.query.nums) {
+    throw new ExpressError('You must pass at least one value, or multiple values with a comma-separated list of numbers.', 400)
+    } else {
+        try {
+            let numsAsStrings = req.query.nums.split(',');
+            nums = convertAndValidateNumsArray(numsAsStrings)
+        } catch(e) {
+            next(new ExpressError("You may only pass Integers as values.", 400))
+        }
+    }
+    const result = {
+        operation: "mode",
+        result: findMode(nums)
     }
     return res.send(result)
 });
